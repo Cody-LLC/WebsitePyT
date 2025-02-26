@@ -4,9 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 # Setup the database URI (using SQLite for this example)
+db = SQLAlchemy()
+DB_NAME = "database.db"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///appointments.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To disable a warning
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # Create the Appointment model (this defines the schema)
 class Appointment(db.Model):
@@ -17,10 +19,6 @@ class Appointment(db.Model):
 
     def __repr__(self):
         return f'<Appointment {self.name} on {self.date} at {self.time}>'
-
-# Initialize the database (this will create the appointments.db file and table)
-def create_tables():
-    db.create_all()
 
 @app.route('/')
 def home():

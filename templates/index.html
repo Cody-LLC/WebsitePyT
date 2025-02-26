@@ -1,4 +1,39 @@
-<h1>Welcome to [Your Friend's Name] Haircutting Services!</h1>
-<p>Get your hair looking great. Book an appointment now!</p>
-<a href="/schedule">Book an Appointment</a>
-<a href="/appointments">View Appointments</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuts by Trent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <!-- Hamburger Menu -->
+    <div class="hamburger" id="hamburger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+
+    <div class="menu" id="menu">
+        <a href="/" class="menu-item">Home</a>
+        <a href="/schedule" class="menu-item">Book an Appointment</a>
+        <a href="/appointments" class="menu-item">View Appointments</a>
+    </div>
+
+    <div class="content">
+        <h1>Cuts by Trent</h1>
+        <p>Pick a time and don't cancel.</p>
+        <a href="/schedule" class="cta-button">Book an Appointment</a>
+        <a href="/appointments" class="cta-button">View Appointments</a>
+    </div>
+
+    <script>
+        // JavaScript for the hamburger menu
+        document.getElementById("hamburger").addEventListener("click", function() {
+            document.getElementById("menu").classList.toggle("show");
+        });
+    </script>
+</body>
+</html>
+ 
