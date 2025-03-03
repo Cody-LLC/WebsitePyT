@@ -9,10 +9,12 @@ def home():
     if request.method == 'POST':
         name = request.form.get('name')
         time = request.form.get('time')
-        if type(time) != str:
-            flash('Input a time i.e. 5:00 PM', category='error')
-        elif type(name) == str:
+        if len(name) <= 2:
+            print(f"Ran name {len(name)}")
             flash('Please input a valid name')
+        elif time not in ["5:00PM", "7:00"]:
+            flash('Only 5:00PM or 6:00PM is available', category='error')
+            print(time)
         else:
             flash("Appointment created")
     return render_template("home.html")
