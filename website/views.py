@@ -11,7 +11,7 @@ def home():
         time = request.form.get('time')
         if len(name) <= 2:
             print(f"Ran name {len(name)}")
-            flash('Please input a valid name')
+            flash('Please input a valid name', category="error")
         elif time not in ["5:00PM", "7:00"]:
             flash('Only 5:00PM or 6:00PM is available', category='error')
             print(time)
