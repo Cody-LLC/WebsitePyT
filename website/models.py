@@ -1,12 +1,11 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
+from datetime import datetime
 
-class Note(db.Model):
-    id = db.Column(db.Integer), primary_key=True)
-    data = db.Column(db.string(100))
-    date = db.column(db.DateTime(timezone=True), default=func.now())
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.column(db.String(150))
+    name = db.Column(db.String(150))
     time = db.Column(db.String(150))
+    day = db.Column(db.String(20))  # Store the day of the appointment (e.g., Monday, Tuesday)
+    week_number = db.Column(db.Integer)  # Store the week number to reset weekly

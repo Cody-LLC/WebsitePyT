@@ -1,17 +1,65 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
 
 {% block content %}
-<form method="POST">
-    <h3a align="center">Schedule</h3a>
+  <h3 class="text-center">Schedule</h3>
+
+  <form method="POST">
     <div class="form-group">
-        <label for="name">Input Name</label>
-        <input type="name" class="form-control" id="name" name="name" placeholder="Enter name"/>
+      <label for="name">Your Name</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
     </div>
-    <div class="time">
-        <label for="time">Time</label>
-        <input type="text" class="form-control" id="time" name="time" placeholder="Pick a time"/>
+    <div class="form-group">
+      <label for="time">Choose a Time</label>
+      <select class="form-control" id="time" name="time">
+        <option value="5:00PM">5:00 PM</option>
+        <option value="7:00PM">7:00 PM</option>
+      </select>
     </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+    <div class="form-group">
+      <label for="day">Choose a Day</label>
+      <select class="form-control" id="day" name="day">
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Book Appointment</button>
+  </form>
+
+  <table class="table table-bordered mt-4">
+    <thead>
+      <tr>
+        <th scope="col">Day</th>
+        <th scope="col">5:00 PM</th>
+        <th scope="col">7:00 PM</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for day, timeslots in schedule.items() %}
+      <tr>
+        <td>{{ day }}</td>
+        <td>
+          {% if timeslots['5:00PM'] %}
+            {{ timeslots['5:00PM'] }}
+          {% else %}
+            <a href="#" class="btn btn-primary" disabled>Register</a>
+          {% endif %}
+        </td>
+        <td>
+          {% if timeslots['7:00PM'] %}
+            {{ timeslots['7:00PM'] }}
+          {% else %}
+            <a href="#" class="btn btn-primary" disabled>Register</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
