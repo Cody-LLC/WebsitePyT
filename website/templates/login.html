@@ -1,8 +1,8 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %}
 
 {% block content %}
-<form method="POST">
-    <h3a align="center">Schedule</h3a>
+<form method="POST" action="/login">
+    <h3 align="center">Schedule</h3>
     <div class="form-group">
         <label for="email">Email</label>
         <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"/>

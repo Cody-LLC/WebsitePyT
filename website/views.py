@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect
+from flask import Blueprint, render_template, request, flash, redirect, session
 from .models import User
 from . import db
 from datetime import datetime
@@ -10,10 +10,15 @@ def get_current_week_number():
 
 @views.route('/', methods=['GET', 'POST'])
 def home():
+    # Check if user is an admin (from session)
+    is_admin = session.get('is_admin', False)
+
+    # Handle form submission for booking an appointment
     if request.method == 'POST':
         name = request.form.get('name')
         time = request.form.get('time')
         day = request.form.get('day')
+        
         # Form validation
         if len(name) <= 2:
             flash('Please input a valid name', category="error")
@@ -35,6 +40,18 @@ def home():
                 # Redirect back to the home page
                 return redirect('/')
 
+    # Handle appointment deletion for admins
+    if is_admin and request.args.get('delete'):
+        appointment_id = request.args.get('delete')
+        appointment = User.query.get(appointment_id)
+        if appointment:
+            db.session.delete(appointment)
+            db.session.commit()
+            flash("Appointment deleted successfully!", category="success")
+        else:
+            flash("Appointment not found.", category="error")
+        return redirect('/')
+
     # Fetch appointments for the current week
     week_number = get_current_week_number()
     users = User.query.filter_by(week_number=week_number).all()
@@ -53,8 +70,8 @@ def home():
     # Populate the schedule dictionary with the names of users
     for user in users:
         if user.time == "5:00PM":
-            schedule[user.day]["5:00PM"] = user.name
+            schedule[user.day]["5:00PM"] = user
         elif user.time == "7:00PM":
-            schedule[user.day]["7:00PM"] = user.name
+            schedule[user.day]["7:00PM"] = user
 
-    return render_template("home.html", schedule=schedule)
+    return render_template("home.html", schedule=schedule, is_admin=is_admin)
