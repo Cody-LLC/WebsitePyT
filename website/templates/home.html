@@ -5,6 +5,7 @@
 {% block content %}
   <h3 class="text-center">Schedule</h3>
 
+  <!-- Appointment Booking Form -->
   <form method="POST">
     <div class="form-group">
       <label for="name">Your Name</label>
@@ -32,6 +33,7 @@
     <button type="submit" class="btn btn-primary">Book Appointment</button>
   </form>
 
+  <!-- Schedule Table -->
   <table class="table table-bordered mt-4">
     <thead>
       <tr>
@@ -46,18 +48,31 @@
         <td>{{ day }}</td>
         <td>
           {% if timeslots['5:00PM'] %}
-            {{ timeslots['5:00PM'] }}
+            {{ timeslots['5:00PM'].name }}
+            {% if is_admin %}
+              <!-- Admin can delete the appointment -->
+              <a href="{{ url_for('views.home', delete=timeslots['5:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+            {% endif %}
           {% else %}
             <a href="#" class="btn btn-primary" disabled>Register</a>
           {% endif %}
         </td>
         <td>
           {% if timeslots['7:00PM'] %}
-            {{ timeslots['7:00PM'] }}
+            {{ timeslots['7:00PM'].name }}
+            {% if is_admin %}
+              <!-- Admin can delete the appointment -->
+              <a href="{{ url_for('views.home', delete=timeslots['7:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+            {% endif %}
           {% else %}
             <a href="#" class="btn btn-primary" disabled>Register</a>
           {% endif %}
         </td>
+        {% if is_admin %}
+          <td>
+            <!-- Admin actions can go here (you can add more if needed) -->
+          </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>
