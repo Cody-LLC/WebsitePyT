@@ -14,8 +14,8 @@
     <div class="form-group">
       <label for="time">Choose a Time</label>
       <select class="form-control" id="time" name="time">
+        <option value="4:00PM">4:00 PM</option>
         <option value="5:00PM">5:00 PM</option>
-        <option value="7:00PM">7:00 PM</option>
       </select>
     </div>
     <div class="form-group">
@@ -30,7 +30,8 @@
         <option value="Sunday">Sunday</option>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary">Book Appointment</button>
+
+    <button type="submit" class="btn btn-primary">Register</button>
   </form>
 
   <!-- Schedule Table -->
@@ -38,8 +39,9 @@
     <thead>
       <tr>
         <th scope="col">Day</th>
+        <th scope="col">4:00 PM</th>
         <th scope="col">5:00 PM</th>
-        <th scope="col">7:00 PM</th>
+        <th scope="col">Custom Time</th>
       </tr>
     </thead>
     <tbody>
@@ -47,10 +49,19 @@
       <tr>
         <td>{{ day }}</td>
         <td>
+          {% if timeslots['4:00PM'] %}
+            {{ timeslots['4:00PM'].name }}
+            {% if is_admin %}
+              <a href="{{ url_for('views.home', delete=timeslots['4:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+            {% endif %}
+          {% else %}
+            <a href="#" class="btn btn-primary" disabled>Register</a>
+          {% endif %}
+        </td>
+        <td>
           {% if timeslots['5:00PM'] %}
             {{ timeslots['5:00PM'].name }}
             {% if is_admin %}
-              <!-- Admin can delete the appointment -->
               <a href="{{ url_for('views.home', delete=timeslots['5:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
             {% endif %}
           {% else %}
@@ -58,14 +69,20 @@
           {% endif %}
         </td>
         <td>
-          {% if timeslots['7:00PM'] %}
-            {{ timeslots['7:00PM'].name }}
-            {% if is_admin %}
-              <!-- Admin can delete the appointment -->
-              <a href="{{ url_for('views.home', delete=timeslots['7:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+          {% if day in ['Friday', 'Saturday', 'Sunday'] %}
+            {% if not timeslots['custom'] %}
+              <!-- Custom time input only for Friday, Saturday, and Sunday -->
+              <form method="POST" action="{{ url_for('views.home') }}">
+                <input type="hidden" name="day" value="{{ day }}">
+                <input type="text" name="custom_time" placeholder="e.g., 6:00PM" class="form-control mb-2" />
+                <button type="submit" class="btn btn-warning">Register Custom Time</button>
+              </form>
+            {% else %}
+              {{ timeslots['custom'].name }}
+              {% if is_admin %}
+                <a href="{{ url_for('views.home', delete=timeslots['custom'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+              {% endif %}
             {% endif %}
-          {% else %}
-            <a href="#" class="btn btn-primary" disabled>Register</a>
           {% endif %}
         </td>
       </tr>
