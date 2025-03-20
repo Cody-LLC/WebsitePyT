@@ -30,8 +30,7 @@
         <option value="Sunday">Sunday</option>
       </select>
     </div>
-
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-custom">Register</button>
   </form>
 
   <!-- Schedule Table -->
@@ -55,7 +54,7 @@
               <a href="{{ url_for('views.home', delete=timeslots['4:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
             {% endif %}
           {% else %}
-            <a href="#" class="btn btn-primary" disabled>Register</a>
+            <a href="#" class="btn btn-primary" disabled>Empty</a>
           {% endif %}
         </td>
         <td>
@@ -65,7 +64,7 @@
               <a href="{{ url_for('views.home', delete=timeslots['5:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
             {% endif %}
           {% else %}
-            <a href="#" class="btn btn-primary" disabled>Register</a>
+            <a href="#" class="btn btn-primary" disabled>Empty</a>
           {% endif %}
         </td>
         <td>
@@ -74,8 +73,8 @@
               <!-- Custom time input only for Friday, Saturday, and Sunday -->
               <form method="POST" action="{{ url_for('views.home') }}">
                 <input type="hidden" name="day" value="{{ day }}">
-                <input type="text" name="custom_time" placeholder="e.g., 6:00PM" class="form-control mb-2" />
-                <button type="submit" class="btn btn-warning">Register Custom Time</button>
+                <input type="text" name="custom_time" placeholder="e.g., 6:30" class="form-control mb-2" />
+                <button type="submit" class="btn btn-custom">Register Custom Time</button>
               </form>
             {% else %}
               {{ timeslots['custom'].name }}

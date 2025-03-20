@@ -1,0 +1,22 @@
+/* Targeting the button by class */
+.btn-custom {
+    background-color: #0080ff !important; /* Blue background */
+    color: white !important;              /* White text */
+    padding: 10px 20px;                   /* Padding for size */
+    font-size: 1.1rem;                    /* Slightly larger text */
+    border-radius: 5px;                   /* Rounded corners */
+    border: none;                         /* Remove border */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Hover effect when the button is hovered */
+.btn-custom:hover {
+    background-color: #004999 !important; /* Darker blue on hover */
+}
+
+/* Targeting the default btn-primary class and making it gray */
+.btn-primary {
+    background-color: #808080 !important; /* Gray background */
+    color: white !important;               /* White text */
+    border: none !important;               /* Remove border */
+}

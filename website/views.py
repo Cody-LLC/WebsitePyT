@@ -20,13 +20,12 @@ def home():
         day = request.form.get('day')
 
         # Form validation
-        if len(name) <= 2:
+        if not name or len(name) <= 2:
             flash('Please input a valid name', category="error")
         elif custom_time and not custom_time.strip():
             flash('Please input a valid custom time', category="error")
         else:
             week_number = get_current_week_number()  # Get the current week number
-            
             # Handle regular time or custom time
             if day in ['Friday', 'Saturday', 'Sunday']:
                 time = 'custom'
