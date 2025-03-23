@@ -18,7 +18,7 @@ def home():
         name = request.form.get('name')
         custom_time = request.form.get('custom_time')
         day = request.form.get('day')
-
+        print(name)
         # Form validation
         if not name or len(name) <= 2:
             flash('Please input a valid name', category="error")

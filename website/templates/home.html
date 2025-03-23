@@ -73,7 +73,7 @@
               <!-- Custom time input only for Friday, Saturday, and Sunday -->
               <form method="POST" action="{{ url_for('views.home') }}">
                 <input type="hidden" name="day" value="{{ day }}">
-                <input type="text" name="custom_time" placeholder="e.g., 6:30" class="form-control mb-2" />
+                <input type="text" name="name" placeholder="e.g., 6:30" class="form-control mb-2" />
                 <button type="submit" class="btn btn-custom">Register Custom Time</button>
               </form>
             {% else %}
