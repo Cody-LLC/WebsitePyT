@@ -11,13 +11,7 @@
       <label for="name">Your Name</label>
       <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
     </div>
-    <div class="form-group">
-      <label for="time">Choose a Time</label>
-      <select class="form-control" id="time" name="time">
-        <option value="4:00PM">4:00 PM</option>
-        <option value="5:00PM">5:00 PM</option>
-      </select>
-    </div>
+
     <div class="form-group">
       <label for="day">Choose a Day</label>
       <select class="form-control" id="day" name="day">
@@ -30,6 +24,22 @@
         <option value="Sunday">Sunday</option>
       </select>
     </div>
+
+    <!-- Time Selection -->
+    <div class="form-group" id="time-select-group">
+      <label for="time">Choose a Time</label>
+      <select class="form-control" id="time" name="time">
+        <option value="4:00PM">4:00 PM</option>
+        <option value="5:00PM">5:00 PM</option>
+      </select>
+    </div>
+
+    <!-- Custom Time Input (Hidden by default) -->
+    <div class="form-group" id="custom-time-group" style="display: none;">
+      <label for="custom_time">Enter Custom Time</label>
+      <input type="text" name="custom_time" id="custom_time" class="form-control" placeholder="e.g., 6:30" />
+    </div>
+
     <button type="submit" class="btn btn-custom">Register</button>
   </form>
 
@@ -40,7 +50,6 @@
         <th scope="col">Day</th>
         <th scope="col">4:00 PM</th>
         <th scope="col">5:00 PM</th>
-        <th scope="col">Custom Time</th>
       </tr>
     </thead>
     <tbody>
@@ -68,19 +77,14 @@
           {% endif %}
         </td>
         <td>
-          {% if day in ['Friday', 'Saturday', 'Sunday'] %}
+          {% if day in ['Friday', 'Saturday', 'Sunday'] and is_admin %}
             {% if not timeslots['custom'] %}
               <!-- Custom time input only for Friday, Saturday, and Sunday -->
               <form method="POST" action="{{ url_for('views.home') }}">
                 <input type="hidden" name="day" value="{{ day }}">
-                <input type="text" name="name" placeholder="e.g., 6:30" class="form-control mb-2" />
-                <button type="submit" class="btn btn-custom">Register Custom Time</button>
+                <input type="text" name="custom_time" placeholder="e.g., 6:30" class="form-control mb-2" />
+                <button type="submit" class="btn btn-custom">Set available time</button>
               </form>
-            {% else %}
-              {{ timeslots['custom'].name }}
-              {% if is_admin %}
-                <a href="{{ url_for('views.home', delete=timeslots['custom'].id) }}" class="btn btn-danger btn-sm">Delete</a>
-              {% endif %}
             {% endif %}
           {% endif %}
         </td>
@@ -88,4 +92,24 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <!-- JavaScript to toggle time selection or custom time input -->
+  <script>
+    document.getElementById("day").addEventListener("change", function() {
+      var selectedDay = this.value;
+      var timeSelectGroup = document.getElementById("time-select-group");
+      var customTimeGroup = document.getElementById("custom-time-group");
+
+      if (selectedDay === "Friday" || selectedDay === "Saturday" || selectedDay === "Sunday") {
+        // Hide time selection dropdown, show custom time input
+        timeSelectGroup.style.display = "none";
+        customTimeGroup.style.display = "block";
+      } else {
+        // Show time selection dropdown, hide custom time input
+        timeSelectGroup.style.display = "block";
+        customTimeGroup.style.display = "none";
+      }
+    });
+  </script>
+
 {% endblock %}

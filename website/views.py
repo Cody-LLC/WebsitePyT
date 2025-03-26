@@ -19,8 +19,10 @@ def home():
         custom_time = request.form.get('custom_time')
         day = request.form.get('day')
         print(name)
+        print(custom_time)
+        print(day)
         # Form validation
-        if not name or len(name) <= 2:
+        if not is_admin and (not name or len(name) <= 2):  # Admin doesn't need to enter a name for custom times
             flash('Please input a valid name', category="error")
         elif custom_time and not custom_time.strip():
             flash('Please input a valid custom time', category="error")
