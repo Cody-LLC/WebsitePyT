@@ -20,3 +20,13 @@
     color: white !important;               /* White text */
     border: none !important;               /* Remove border */
 }
+
+.table-bordered.mt-4 td.custom-time {
+    padding-left: 30px; /* This can be adjusted to your preference */
+  }
+.custom-delete-btn {
+    padding: 5px 10px; /* Adjust padding here */
+    margin-top: 5px;   /* Adds margin above the button */
+    display: inline-block; /* Ensure button doesn’t stretch to full width */
+  }
+  

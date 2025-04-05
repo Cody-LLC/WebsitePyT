@@ -30,4 +30,5 @@ def login():
 
 @auth.route('/logout')
 def logout():
+    session['is_admin'] = False
     return render_template("logout.html")
