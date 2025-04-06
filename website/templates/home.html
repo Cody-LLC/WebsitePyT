@@ -122,7 +122,7 @@
           <td>
             {% if availability[day] %}
               {% for slot in availability[day] %}
-                <p><strong>{{ slot.start_time }} {{ slot.end_time }} </strong> </p>
+                <p><strong>{{ slot.start_time }} - {{ slot.end_time }} </strong> </p>
                 {% if is_admin %}
                   <a href="{{ url_for('views.home', delete=slot.id, type='availability') }}" class="btn btn-danger btn-sm">Delete</a>
                 {% endif %}
