@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, session
 from .models import User
+from .models import Availability
 from . import db
 from datetime import datetime
 
@@ -48,31 +49,60 @@ def home():
             try:
                 # Split the custom time into start and end times (assuming format is "11-5")
                 start_time, end_time = custom_time.split('-')
+                # Remove extra spaces
+                start_time = start_time.strip()
+                end_time = end_time.strip()
+                
+                # Check if the availability entry already exists for this day
+                availability = Availability.query.filter_by(day=day).first()
 
-                # Store start and end times in the session
-                session[f'{day}_start_time'] = start_time.strip()  # Strip to remove any extra spaces
-                session[f'{day}_end_time'] = end_time.strip()      # Strip to remove any extra spaces
-
-                print(f"Day: {day}, Start Time: {start_time}, End Time: {end_time}")
-                print(session)
+                if availability:
+                    # If it exists, update the existing entry with the new times
+                    availability.start_time = start_time
+                    availability.end_time = end_time
+                    db.session.commit()  # Save the changes
+                    flash(f"Updated availability for {day}!", category="success")
+                else:
+                    # If it doesn't exist, create a new availability entry
+                    new_availability = Availability(day=day, start_time=start_time, end_time=end_time)
+                    db.session.add(new_availability)
+                    db.session.commit()  # Save the new entry
+                    flash(f"Set availability for {day}!", category="success")
 
             except ValueError:
-                # Handle the case where the split operation fails (e.g., if there isn't a hyphen or only one number is provided)
+                # Handle invalid time format (if the split fails)
                 flash(f"Invalid time format for {day}. Please provide a time range like '11-5'.", category="error")
-                # Optionally, you can store an error message in the session or set default times
             
-            return redirect('/')  # Redirect back after saving the time
+            return redirect('/')  # Redirect back to the home page after saving the time
     # Handle appointment deletion for admins
     if is_admin and request.args.get('delete'):
-        appointment_id = request.args.get('delete')
-        appointment = User.query.get(appointment_id)
-        if appointment:
-            db.session.delete(appointment)
-            db.session.commit()
-            flash("Appointment deleted successfully!", category="success")
+        item_id = request.args.get('delete')  # Get the item ID from the URL
+        item_type = request.args.get('type')  # Get the type (either 'user' or 'availability')
+
+        # Handle User deletion
+        if item_type == 'user':
+            user = User.query.get(item_id)
+            if user:
+                db.session.delete(user)
+                db.session.commit()
+                flash("User deleted successfully!", category="success")
+            else:
+                flash("User not found.", category="error")
+
+        # Handle Availability deletion
+        elif item_type == 'availability':
+            availability = Availability.query.get(item_id)
+            if availability:
+                db.session.delete(availability)
+                db.session.commit()
+                flash("Availability deleted successfully!", category="success")
+            else:
+                flash("Availability not found.", category="error")
+
         else:
-            flash("Appointment not found.", category="error")
-        return redirect('/')
+            flash("Invalid delete type.", category="error")
+
+        return redirect('/')  # Redirect to home or another page after deletion
 
     # Fetch appointments for the current week
     users = User.query.all()
@@ -86,6 +116,11 @@ def home():
         "Friday": {"4:00PM": None, "5:00PM": None, "custom": []},
         "Saturday": {"4:00PM": None, "5:00PM": None, "custom": []},
         "Sunday": {"4:00PM": None, "5:00PM": None, "custom": []},
+    }
+    availability = {
+        "Friday": [],
+        "Saturday": [],
+        "Sunday": []
     }
 
     # Populate the schedule dictionary with the names of users
@@ -104,5 +139,16 @@ def home():
                 'time': custom_time,      # The custom time (e.g., '2:20')
                 'id': appointment.id  # Store the user's ID here for deletion purposes
             })
-
-    return render_template("home.html", schedule=schedule, is_admin=is_admin)
+    availability_slots = Availability.query.filter(Availability.day.in_(['Friday', 'Saturday', 'Sunday'])).all()
+    for slot in availability_slots:
+        day = slot.day
+        start_time = slot.start_time  # Using start_time from the Availability model
+        end_time = slot.end_time      # Using end_time from the Availability model
+        if day in availability:
+            availability[day].append({
+                'start_time': start_time,  # The start time of the availability (e.g., '9:00AM')
+                'end_time': end_time,      # The end time of the availability (e.g., '10:00AM')
+                'id': slot.id              # Store the availability ID for deletion purposes (optional)
+            })
+    print(availability)
+    return render_template("home.html", schedule=schedule, availability=availability, is_admin=is_admin)

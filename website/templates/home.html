@@ -62,7 +62,7 @@
             {% if timeslots['4:00PM'] %}
               {{ timeslots['4:00PM'].name }}
               {% if is_admin %}
-                <a href="{{ url_for('views.home', delete=timeslots['4:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+                <a href="{{ url_for('views.home', delete=timeslots['4:00PM'].id, type='user') }}" class="btn btn-danger btn-sm">Delete</a>
               {% endif %}
             {% else %}
               <a href="#" class="btn btn-primary" disabled>Empty</a>
@@ -72,7 +72,7 @@
             {% if timeslots['5:00PM'] %}
               {{ timeslots['5:00PM'].name }}
               {% if is_admin %}
-                <a href="{{ url_for('views.home', delete=timeslots['5:00PM'].id) }}" class="btn btn-danger btn-sm">Delete</a>
+                <a href="{{ url_for('views.home', delete=timeslots['5:00PM'].id, type='user') }}" class="btn btn-danger btn-sm">Delete</a>
               {% endif %}
             {% else %}
               <a href="#" class="btn btn-primary" disabled>Empty</a>
@@ -85,34 +85,54 @@
   </table>
 
   <!-- Schedule Table for Friday to Sunday -->
-  <table class="table table-bordered mt-4">
-    <thead>
-      <tr>
-        <th scope="col">Day</th>
-        <th scope="col">Custom Time</th>
-        {% if is_admin %}
+<table class="table table-bordered mt-4">
+  <thead>
+    <tr>
+      <th scope="col">Day</th>
+      <th scope="col">Custom Time</th>
+      <th scope="col">Available Time</th> <!-- New column for start and end times -->
+      {% if is_admin %}
         <th scope="col">Action</th>
-        {% endif %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for day, timeslots in schedule.items() %}
-        {% if day in ['Friday', 'Saturday', 'Sunday'] %}
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for day, timeslots in schedule.items() %}
+      {% if day in ['Friday', 'Saturday', 'Sunday'] %}
         <tr>
+          <!-- Display the day -->
           <td>{{ day }}</td>
+  
+          <!-- Display the custom time slots if available -->
           <td>
             {% if timeslots['custom'] %}
               {% for custom_user in timeslots['custom'] %}
                 {{ custom_user.name }} at {{ custom_user.time }}<br>
                 {% if is_admin %}
                   <!-- Render a delete button for each custom appointment -->
-                  <a href="{{ url_for('views.home', delete=custom_user.id) }}" class="btn btn-danger btn-sm custom-delete-btn ml-2 mb-2">Delete</a>
+                  <a href="{{ url_for('views.home', delete=custom_user.id, type='user') }}" class="btn btn-danger btn-sm custom-delete-btn ml-2 mb-2">Delete</a>
                 {% endif %}
               {% endfor %}
             {% else %}
               <a href="#" class="btn btn-primary" disabled>Empty</a>
             {% endif %}
           </td>
+  
+          <!-- Display the availability slots for this specific day -->
+          <td>
+            {% if availability[day] %}
+              {% for slot in availability[day] %}
+                <p><strong>{{ slot.start_time }} {{ slot.end_time }} </strong> </p>
+                {% if is_admin %}
+                  <a href="{{ url_for('views.home', delete=slot.id, type='availability') }}" class="btn btn-danger btn-sm">Delete</a>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <p>No available times</p>
+            {% endif %}
+          </td>
+  
+          <!-- Admin option to set custom time for that day -->
           <td>
             {% if is_admin %}
               {% if not timeslots['custom'] %}
@@ -129,10 +149,10 @@
             {% endif %}
           </td>
         </tr>
-        {% endif %}
-      {% endfor %}
-    </tbody>
-    
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
 
   <!-- JavaScript to toggle time selection or custom time input -->
   <script>
