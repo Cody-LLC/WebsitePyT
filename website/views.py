@@ -149,5 +149,4 @@ def home():
                 'end_time': end_time,      # The end time of the availability (e.g., '10:00AM')
                 'id': slot.id              # Store the availability ID for deletion purposes (optional)
             })
-    print(availability)
     return render_template("home.html", schedule=schedule, availability=availability, is_admin=is_admin, current_day=current_day)
