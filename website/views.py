@@ -8,9 +8,8 @@ views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET', 'POST'])
 def home():
-    # Check if user is an admin (from session)
-    is_admin = session.get('is_admin', False)
-
+    is_admin = session.get('is_admin', False)    # Check if user is an admin (from session)
+    current_day = datetime.now().strftime('%A')  # This will give the current day of the week, e.g., 'Monday'
     # Handle form submission for booking an appointment
     if request.method == 'POST':
         form_type = request.form.get('form-type')
@@ -151,4 +150,4 @@ def home():
                 'id': slot.id              # Store the availability ID for deletion purposes (optional)
             })
     print(availability)
-    return render_template("home.html", schedule=schedule, availability=availability, is_admin=is_admin)
+    return render_template("home.html", schedule=schedule, availability=availability, is_admin=is_admin, current_day=current_day)
