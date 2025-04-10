@@ -3,6 +3,7 @@ from .models import User
 from .models import Availability
 from . import db
 from datetime import datetime
+import re
 
 views = Blueprint('views', __name__) 
 
@@ -18,6 +19,9 @@ def home():
             custom_time = request.form.get('custom_time')
             day = request.form.get('day')
             # Form validation
+            if custom_time and not is_valid_am_pm_format(custom_time):
+                flash("Please enter a valid time in AM/PM format (e.g., '2:30 PM').", category="error")
+                return redirect('/')
             if not is_admin and (not name or len(name) <= 2):  # Admin doesn't need to enter a name for custom times
                 flash('Please input a valid name', category="error")
             elif custom_time and not custom_time.strip():
@@ -25,6 +29,10 @@ def home():
             else:
                 # Handle regular time or custom time
                 if day in ['Friday', 'Saturday', 'Sunday']:
+                    availability = Availability.query.filter_by(day=day).first()
+                    if not availability:
+                        flash(f"No availability set for {day}.", category="error")
+                        return redirect('/')
                     time = 'custom'
                 else:
                     time = request.form.get('time')
@@ -150,3 +158,16 @@ def home():
                 'id': slot.id              # Store the availability ID for deletion purposes (optional)
             })
     return render_template("home.html", schedule=schedule, availability=availability, is_admin=is_admin, current_day=current_day)
+    
+def convert_to_military_time(time_str):
+    try:
+        time_obj = datetime.strptime(time_str.strip(), '%I:%M%p')  # Parses 12-hour format time (e.g., 7:00PM)
+        return time_obj.strftime('%H:%M')  # Converts to 24-hour format (military time)
+    except ValueError:
+        return None
+
+
+
+def is_valid_am_pm_format(time_str):
+    am_pm_regex = r'^[0-9]{1,2}(:[0-9]{2})?\s*(AM|PM)$'
+    return re.match(am_pm_regex, time_str.strip()) is not None
