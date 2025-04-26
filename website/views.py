@@ -33,6 +33,14 @@ def home():
                     if not availability:
                         flash(f"No availability set for {day}.", category="error")
                         return redirect('/')
+                    # start_time = availability.start_time
+                    # end_time = availability.end_time
+                    # start_military = convert_to_military_time(start_time)
+                    # end_military = convert_to_military_time(end_time)
+                    # print(start_time)
+                    # print(end_time)
+                    # print(start_military)
+                    # print(end_military)
                     time = 'custom'
                 else:
                     time = request.form.get('time')
@@ -161,9 +169,22 @@ def home():
     
 def convert_to_military_time(time_str):
     try:
+        # Ensure there's always a minutes part (e.g. '11 AM' -> '11:00 AM')
+        if len(time_str.split(':')) == 1:
+            time_str = time_str.strip() + ":00"  # Add ':00' for the minutes
+        
+        # Print to check the time before conversion
+        print(f"Converting time: '{time_str}'")
+        
+        # Try to parse as 12-hour format (AM/PM)
         time_obj = datetime.strptime(time_str.strip(), '%I:%M%p')  # Parses 12-hour format time (e.g., 7:00PM)
+        
+        # Print for debugging after conversion
+        print(f"Converted to military: '{time_obj.strftime('%H:%M')}'")
+        
         return time_obj.strftime('%H:%M')  # Converts to 24-hour format (military time)
     except ValueError:
+        print(f"Conversion failed for time: '{time_str}'")
         return None
 
 

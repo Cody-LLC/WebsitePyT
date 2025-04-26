@@ -30,3 +30,93 @@
     display: inline-block; /* Ensure button doesn’t stretch to full width */
   }
   
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-image: url("static/images/logo");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #000; /* Set to black */
+    opacity: 1.0;
+  }
+
+  .home-background {
+    background-image: url("../images/logo.jpeg");
+    background-size: cover; /* Ensure the background fills the viewport */
+    background-position: center; /* Keeps the image centered */
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-attachment: fixed; /* For a more dynamic scroll effect */
+  }
+  
+  .content-overlay {
+    background-color: rgba(0, 0, 0, 0.6); /* dark overlay */
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  input.form-control, select.form-control {
+    background-color: rgba(255, 255, 255, 0.4); /* 50% opacity for all form fields */
+    color: #000; /* Ensure text is readable */
+    border: 1px solid rgba(0, 0, 0, 0.2); /* Slight border for visibility */
+  }
+  
+  /* Optional: Adjust focus style for input */
+  input.form-control:focus, select.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.7); /* Slightly darker on focus */
+    border-color: rgba(0, 123, 255, 0.7); /* Focus border color */
+    outline: none;
+  }
+
+  table.table-bordered {
+    border: none;
+  }
+  
+  table.table-bordered th, table.table-bordered td {
+    border: none;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .table {
+    width: 100%;
+    max-width: 100%;
+  }
+  /*shadows */
+  h3, label, th, td, p, span, a, input, select, button {
+    color: white;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+  }
+  input.form-control::placeholder {
+    color: #000 !important;
+  }
+
+  @media (max-width: 768px) {
+    .home-background {
+      background-size: 120%; /* Scales down the zoom level */
+      background-attachment: scroll;
+      padding: 30px 15px;
+      min-height: 80vh;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .home-background {
+      background-size: 100% 100%; /* Stretch image vertically */
+      background-attachment: scroll;
+      padding: 20px 10px;
+      min-height: 70vh;
+    }
+  }
